@@ -30,7 +30,7 @@ git init
 git add .
 git commit -m "Initial commit aplikasi E-Perpus Python LocalStack"
 git branch -M main
-git remote add origin https://github.com/devihmpsta/e-perpus-python-localstack.git
+git remote add origin https://github.com/devihmpsta/e-perpus-localstack.git
 git push -u origin main
 ```
 
@@ -39,7 +39,7 @@ Ganti `USERNAME` dengan username GitHub Anda.
 Contoh:
 
 ```bash
-git remote add origin https://github.com/devihmpsta/e-perpus-python-localstack.git
+git remote add origin https://github.com/devihmpsta/e-perpus-localstack.git
 ```
 
 ## 3. Jika Setelah Edit Ingin Push Lagi
