@@ -67,4 +67,4 @@ Agar data Anda tetap aman saat komputer dimatikan:
 3.  **Local Backup**: File foto sampul Anda aman di folder `static/uploads/`, pastikan folder ini tidak dihapus secara manual.
 
 ---
-*Dikembangkan oleh Tim E-Perpus Digital - 2026*
+*Dikembangkan oleh Devi Himawan Puspita - 2026*
