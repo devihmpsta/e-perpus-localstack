@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | E-Perpus</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-body">
+    <div class="auth-card">
+        <!-- Left Side: Branding -->
+        <div class="auth-side-brand">
+            <img src="{{ url_for('static', filename='img/logo_text.png') }}" alt="Logo E-Perpus">
+            <h2>E-Perpus Digital</h2>
+            <p>Akses ribuan koleksi buku digital secara mudah, cepat, dan terpercaya untuk mendukung literasi Anda.</p>
+        </div>
+
+        <!-- Right Side: Form -->
+        <div class="auth-main-content">
+            <h1>Selamat Datang</h1>
+            <p class="subtitle">Masuk untuk mengelola koleksi digital Anda</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}" style="margin-bottom: 1.5rem;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form class="auth-form" method="post">
+                <div class="form-group">
+                    <label>Nama Pengguna</label>
+                    <input type="text" name="username" class="auth-input" placeholder="Username Anda" required autofocus>
+                </div>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label>Kata Sandi</label>
+                    <input type="password" name="password" class="auth-input" placeholder="Password Anda" required>
+                </div>
+                <button class="auth-btn" type="submit">Masuk ke Dashboard</button>
+            </form>
+
+            <div class="auth-divider">
+                <span>atau</span>
+            </div>
+
+            <a href="{{ url_for('register') }}" class="auth-btn-outline">
+                Daftar Member Baru
+            </a>
+
+            <div class="auth-footer" style="margin-top: 1rem; font-size: 0.75rem; color: #94a3b8; text-align: center;">
+                <div style="background: #f8fafc; padding: 6px; border-radius: 8px; border: 1px dashed #e2e8f0;">
+                    <strong>Demo Admin:</strong> admin / admin123
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

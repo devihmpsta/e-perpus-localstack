@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% set title = 'Detail Buku' %}
+
+{% block content %}
+<div class="page-header" style="margin-bottom: 2rem;">
+    <div class="page-title">
+        <h1>Detail Informasi Buku</h1>
+        <p>Informasi lengkap mengenai buku yang Anda pilih.</p>
+    </div>
+    <div class="page-actions">
+        <a href="{{ url_for('katalog') }}" class="btn btn-outline">
+            ← Kembali ke Katalog
+        </a>
+    </div>
+</div>
+
+<div class="section-card" style="display: grid; grid-template-columns: 350px 1fr; gap: 0;">
+    <!-- Book Cover Area -->
+    <div style="background: var(--bg-main); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0; border-right: 1px solid var(--border); overflow: hidden;">
+        {% if book.cover_url %}
+        <img src="{{ book.cover_url }}" alt="{{ book.title }}" style="width: 100%; height: 450px; object-fit: cover; border-bottom: 1px solid var(--border);">
+        {% else %}
+        <div style="font-size: 8rem; margin: 3rem 0; filter: drop-shadow(0 20px 25px rgba(0,0,0,0.1));">📘</div>
+        {% endif %}
+        <div style="padding: 1.5rem 0;">
+            <div class="badge {{ 'badge-success' if book.stock|int > 0 else 'badge-warning' }}" style="font-size: 1rem; padding: 0.5rem 1.5rem;">
+                {{ 'Tersedia' if book.stock|int > 0 else 'Stok Habis' }} ({{ book.stock }})
+            </div>
+        </div>
+    </div>
+
+    <!-- Book Information Area -->
+    <div style="padding: 2.5rem;">
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-main); line-height: 1.2; margin-bottom: 1rem; letter-spacing: -0.025em;">
+            {{ book.title }}
+        </h1>
+        
+        <div style="display: flex; gap: 2rem; margin-bottom: 2.5rem;">
+            <div>
+                <span style="display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Penulis</span>
+                <span style="font-weight: 700; color: var(--primary);">{{ book.author }}</span>
+            </div>
+            <div style="width: 1px; background: var(--border); height: 40px;"></div>
+            <div>
+                <span style="display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Tahun Terbit</span>
+                <span style="font-weight: 700;">{{ book.year }}</span>
+            </div>
+            <div style="width: 1px; background: var(--border); height: 40px;"></div>
+            <div>
+                <span style="display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem;">Penerbit</span>
+                <span style="font-weight: 700;">{{ book.publisher }}</span>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 2.5rem;">
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.75rem;">Sinopsis / Deskripsi</h3>
+            <p style="color: var(--text-muted); line-height: 1.8; font-size: 1rem;">
+                {{ book.description }}
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 1rem; padding: 2rem 0; border-top: 1px solid var(--border-light);">
+            <a href="{{ url_for('peminjaman', book_id=book.book_id) }}" class="btn btn-primary" style="padding: 0.75rem 2rem;">
+                Pinjam Buku Ini
+            </a>
+            <a href="{{ url_for('tambah_favorit', book_id=book.book_id) }}" class="btn btn-outline" style="padding: 0.75rem 2rem; border-color: #fecaca; color: #ef4444;">
+                ❤ Tambah ke Favorit
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media (max-width: 992px) {
+        .section-card {
+            grid-template-columns: 1fr !important;
+        }
+        div[style*="border-right: 1px solid var(--border)"] {
+            border-right: none !important;
+            border-bottom: 1px solid var(--border) !important;
+        }
+    }
+</style>
+{% endblock %}

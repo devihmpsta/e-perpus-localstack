@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% set title = 'Laporan Aktivitas' %}
+
+{% block content %}
+<div class="page-header" style="margin-bottom: 2.5rem;">
+    <div class="page-title">
+        <h1>Laporan Perpustakaan</h1>
+        <p>Rekapitulasi seluruh transaksi peminjaman dan pengembalian buku.</p>
+    </div>
+    <div class="page-actions">
+        <button class="btn btn-outline" onclick="window.print()">
+            ⎙ Cetak Laporan
+        </button>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-header">
+        <h2>Data Transaksi</h2>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>ID Transaksi</th>
+                    <th>Nama Peminjam</th>
+                    <th>Judul Buku</th>
+                    <th>Tgl Pinjam</th>
+                    <th>Tgl Kembali</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loan in loans %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td style="font-family: monospace; font-size: 0.8rem; color: var(--primary);">#{{ loan.loan_id.split('-')[-1] }}</td>
+                    <td style="font-weight: 600;">{{ loan.member_name }}</td>
+                    <td>{{ loan.book_title }}</td>
+                    <td>{{ loan.borrowed_at }}</td>
+                    <td>{{ loan.returned_at|default('-') }}</td>
+                    <td>
+                        <span class="badge {{ 'badge-success' if loan.status == 'Dikembalikan' else 'badge-warning' }}">
+                            {{ loan.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 4rem; color: var(--text-muted);">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📁</div>
+                        Belum ada laporan aktivitas yang tercatat.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

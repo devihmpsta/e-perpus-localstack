@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% set title = 'Peminjaman Buku' %}
+
+{% block content %}
+<div class="section-card" style="margin-bottom: 2rem;">
+    <div class="section-header">
+        <h2>Formulir Peminjaman Baru</h2>
+    </div>
+    <form class="form-grid" method="post">
+        <div class="form-group">
+            <label>Nama Anggota</label>
+            <select name="member_id" required>
+                <option value="">-- Pilih Anggota --</option>
+                {% for member in members %}
+                <option value="{{ member.member_id }}" {% if selected_member_id == member.member_id %}selected{% endif %}>{{ member.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Judul Buku</label>
+            <select name="book_id" required>
+                <option value="">-- Pilih Buku --</option>
+                {% for book in books %}
+                <option value="{{ book.book_id }}">{{ book.title }} (Stok: {{ book.stock }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Tanggal Pinjam</label>
+            <input type="text" name="borrow_date" class="form-input" value="{{ today }}">
+        </div>
+        <div class="form-group">
+            <label>Kondisi Buku</label>
+            <select name="condition_borrow" required>
+                <option value="Baik">Baik</option>
+                <option value="Rusak Ringan">Rusak Ringan</option>
+                <option value="Rusak Berat">Rusak Berat</option>
+            </select>
+        </div>
+        <div class="span-2" style="text-align: right; border-top: 1px solid var(--border-light); padding-top: 1rem;">
+            <button class="btn btn-primary" type="submit">Proses Peminjaman</button>
+        </div>
+    </form>
+</div>
+
+<div class="section-card">
+    <div class="section-header">
+        <h2>Riwayat Peminjaman</h2>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Peminjam</th>
+                    <th>Buku</th>
+                    <th>Tgl Pinjam</th>
+                    <th>Kondisi</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loan in loans %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td style="font-weight: 600;">{{ loan.member_name }}</td>
+                    <td>{{ loan.book_title }}</td>
+                    <td>{{ loan.borrowed_at }}</td>
+                    <td>{{ loan.condition_borrow }}</td>
+                    <td>
+                        <span class="badge {{ 'badge-success' if loan.status == 'Dikembalikan' else 'badge-warning' }}">
+                            {{ loan.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">Belum ada riwayat peminjaman.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

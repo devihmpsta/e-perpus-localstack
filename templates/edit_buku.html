@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% set title = 'Edit Data Buku' %}
+
+{% block content %}
+<div class="page-header" style="margin-bottom: 2rem;">
+    <div class="page-title">
+        <h1>Edit Informasi Buku</h1>
+        <p>Perbarui informasi koleksi buku atau tambahkan stok baru.</p>
+    </div>
+    <div class="page-actions">
+        <a href="{{ url_for('buku') }}" class="btn btn-outline">
+            ← Kembali
+        </a>
+    </div>
+</div>
+
+<div class="section-card">
+    <form class="form-grid" method="post" enctype="multipart/form-data">
+        <div class="form-group span-2">
+            <label>Judul Buku</label>
+            <input type="text" name="title" class="form-input" value="{{ book.title }}" required>
+        </div>
+        <div class="form-group">
+            <label>Penulis</label>
+            <input type="text" name="author" class="form-input" value="{{ book.author }}">
+        </div>
+        <div class="form-group">
+            <label>Penerbit</label>
+            <input type="text" name="publisher" class="form-input" value="{{ book.publisher }}">
+        </div>
+        <div class="form-group">
+            <label>Tahun Terbit</label>
+            <input type="text" name="year" class="form-input" value="{{ book.year }}">
+        </div>
+        <div class="form-group">
+            <label>Stok Tersedia</label>
+            <input type="number" name="stock" class="form-input" value="{{ book.stock }}" min="0">
+        </div>
+        <div class="form-group span-2">
+            <label>Ganti Foto Sampul</label>
+            <div style="display: flex; gap: 1.5rem; align-items: start; margin-bottom: 0.5rem;">
+                {% if book.cover_url %}
+                <div style="width: 80px; height: 110px; background: var(--bg-main); border-radius: 0.5rem; overflow: hidden; border: 1px solid var(--border);">
+                    <img src="{{ book.cover_url }}" alt="Cover" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                {% endif %}
+                <div style="flex: 1;">
+                    <input type="file" name="cover" class="form-input" accept="image/*">
+                    <small style="color: var(--text-muted); font-size: 0.75rem;">Pilih file baru jika ingin mengganti sampul lama.</small>
+                </div>
+            </div>
+        </div>
+        <div class="form-group span-2">
+            <label>Deskripsi Buku</label>
+            <textarea name="description" rows="5" class="form-input">{{ book.description }}</textarea>
+        </div>
+        <div class="span-2" style="text-align: right; padding-top: 1.5rem; border-top: 1px solid var(--border-light);">
+            <button class="btn btn-primary" type="submit">Simpan Perubahan</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

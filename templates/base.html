@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name }} | {{ title|default('Dashboard') }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="{{ url_for('dashboard') }}" class="brand-link">
+                    <div class="brand-name">E-PERPUS</div>
+                </a>
+            </div>
+
+            <nav class="sidebar-menu">
+                <div class="menu-label">Navigasi</div>
+                <a href="{{ url_for('dashboard') }}" class="menu-item {{ 'active' if request.path == url_for('dashboard') else '' }}">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Dashboard
+                </a>
+
+                {% if current_role == 'Administrator' %}
+                <div class="menu-dropdown">
+                    <div class="menu-item">
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                        Master Data
+                    </div>
+                    <div class="menu-dropdown-content">
+                        <a href="{{ url_for('anggota') }}" class="menu-item sub-menu-item">Data Anggota</a>
+                        <a href="{{ url_for('buku') }}" class="menu-item sub-menu-item">Data Buku</a>
+                        <a href="{{ url_for('peminjaman') }}" class="menu-item sub-menu-item">Peminjaman</a>
+                    </div>
+                </div>
+                <a href="{{ url_for('katalog') }}" class="menu-item {{ 'active' if request.path == url_for('katalog') else '' }}">
+                    <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    Katalog
+                </a>
+                <a href="{{ url_for('laporan') }}" class="menu-item {{ 'active' if request.path == url_for('laporan') else '' }}">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    Laporan
+                </a>
+                {% else %}
+                <a href="{{ url_for('peminjaman') }}" class="menu-item {{ 'active' if request.path == url_for('peminjaman') else '' }}">
+                    <svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                    Peminjaman
+                </a>
+                <a href="{{ url_for('pengembalian') }}" class="menu-item {{ 'active' if request.path == url_for('pengembalian') else '' }}">
+                    <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                    Pengembalian
+                </a>
+                <a href="{{ url_for('katalog') }}" class="menu-item {{ 'active' if request.path == url_for('katalog') else '' }}">
+                    <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    Katalog
+                </a>
+                {% endif %}
+
+                <div class="menu-label">Sistem</div>
+                <a href="{{ url_for('profil') }}" class="menu-item {{ 'active' if request.path == url_for('profil') else '' }}">
+                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    Profil
+                </a>
+                <a href="{{ url_for('pesan') }}" class="menu-item {{ 'active' if request.path == url_for('pesan') else '' }}">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    Pesan
+                </a>
+                <a href="{{ url_for('logout') }}" class="menu-item" style="color: #f87171;">
+                    <span>↪</span> Keluar
+                </a>
+            </nav>
+
+            {% if featured_book %}
+            <div class="sidebar-book-card">
+                <div class="mini-cover">
+                    {% if featured_book.cover_url %}
+                    <img src="{{ featured_book.cover_url }}" alt="Featured">
+                    {% else %}
+                    📘
+                    {% endif %}
+                </div>
+                <h4>{{ featured_book.title }}</h4>
+                <p>{{ featured_book.author }}</p>
+                <a href="{{ url_for('detail_buku_katalog', book_id=featured_book.book_id) }}" style="display: block; font-size: 0.6875rem; color: #fff; margin-top: 0.5rem; text-decoration: underline;">Lihat Detail</a>
+            </div>
+            {% endif %}
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <header class="navbar">
+                <div class="nav-left">
+                    <button id="sidebar-toggle" class="toggle-btn">☰</button>
+                    <div class="breadcrumb hide-mobile" style="font-size: 0.8125rem; color: var(--text-muted);">
+                        <a href="{{ url_for('dashboard') }}" style="color: var(--primary); font-weight: 500;">Dashboard</a> / {{ title|default('Home') }}
+                    </div>
+                </div>
+                <div class="nav-right">
+                    <a href="{{ url_for('favorit') }}" class="nav-icon" title="Favorit Saya" style="color: #ef4444;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </a>
+                    <a href="{{ url_for('pesan') }}" class="nav-icon" title="Pesan">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        {% if unread_count > 0 %}
+                        <span class="badge-notify">{{ unread_count }}</span>
+                        {% endif %}
+                    </a>
+                    <a href="{{ url_for('laporan' if current_role == 'Administrator' else 'pengembalian') }}" class="nav-icon" title="Laporan & Notifikasi">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    </a>
+                    <div style="width: 1px; height: 24px; background: var(--border); margin: 0 0.5rem;"></div>
+                    <a href="{{ url_for('profil') }}" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit;">
+                        <div style="text-align: right;" class="hide-mobile">
+                            <div style="font-size: 0.875rem; font-weight: 600;">{{ current_user }}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">{{ current_role }}</div>
+                        </div>
+                        <div style="width: 36px; height: 36px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);">
+                            {{ current_user[0] | upper }}
+                        </div>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>&copy; 2026 E-Perpus. All rights reserved.</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

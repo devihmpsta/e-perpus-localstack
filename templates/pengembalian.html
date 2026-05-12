@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% set title = 'Pengembalian Buku' %}
+
+{% block content %}
+<div class="page-header" style="margin-bottom: 2rem;">
+    <div class="page-title">
+        <h1>Pengembalian Buku</h1>
+        <p>Silakan pilih buku yang ingin dikembalikan dan lengkapi kondisi bukunya.</p>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 350px; gap: 2rem; align-items: start;">
+    <!-- Riwayat Section -->
+    <div class="section-card">
+        <div class="section-header">
+            <h2>Riwayat Pengembalian</h2>
+        </div>
+        <div style="padding: 1rem;">
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Buku</th>
+                            <th>Anggota</th>
+                            <th>Tgl Kembali</th>
+                            <th>Status</th>
+                            <th>Kondisi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in loans %}
+                            {% if current_role == 'Administrator' or loan.member_id == session.get('member_id') %}
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 600; color: var(--text-main);">{{ loan.book_title }}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">#{{ loan.loan_id }}</div>
+                                </td>
+                                <td>{{ loan.member_name }}</td>
+                                <td>{{ loan.returned_at|default('-') }}</td>
+                                <td>
+                                    <span class="badge {{ 'badge-success' if loan.status == 'Dikembalikan' else 'badge-warning' }}">
+                                        {{ loan.status }}
+                                    </span>
+                                </td>
+                                <td>{{ loan.condition_return|default('-') }}</td>
+                            </tr>
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                                    Belum ada riwayat transaksi.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="section-card">
+        <div class="section-header">
+            <h2>Proses Kembali</h2>
+        </div>
+        <div style="padding: 1.5rem;">
+            <form class="form-grid one" method="post">
+                <div class="form-group">
+                    <label>Buku yang Dipinjam</label>
+                    <select name="loan_id" class="form-input" required>
+                        <option value="">-- Pilih Buku --</option>
+                        {% for loan in active_loans %}
+                        <option value="{{ loan.loan_id }}">
+                            {{ loan.book_title }} (Tgl Pinjam: {{ loan.borrowed_at }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Kondisi Buku Saat Ini</label>
+                    <select name="condition_return" class="form-input" required>
+                        <option value="">-- Pilih Kondisi --</option>
+                        <option value="Baik">Baik (Normal)</option>
+                        <option value="Rusak Ringan">Rusak Ringan</option>
+                        <option value="Rusak Berat">Rusak Berat</option>
+                        <option value="Hilang">Hilang</option>
+                    </select>
+                </div>
+                
+                <div style="margin-top: 1.5rem;">
+                    <button class="btn btn-primary" style="width: 100%;" type="submit">
+                        Konfirmasi Pengembalian
+                    </button>
+                </div>
+            </form>
+
+            <div style="margin-top: 1.5rem; padding: 1rem; background: var(--primary-light); border-radius: 0.75rem; border: 1px dashed var(--primary);">
+                <p style="font-size: 0.75rem; color: var(--primary); line-height: 1.5; margin: 0;">
+                    <strong>Info:</strong> Stok buku akan otomatis bertambah kembali setelah proses pengembalian berhasil divalidasi.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media (max-width: 1024px) {
+        div[style*="grid-template-columns: 1fr 350px"] {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}

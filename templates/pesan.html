@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% set title = 'Pesan & Aktivitas' %}
+
+{% block content %}
+<div class="page-header" style="margin-bottom: 2rem;">
+    <div class="page-title">
+        <h1>Pesan & Aktivitas</h1>
+        <p>Log aktivitas aplikasi yang ditarik secara real-time dari SQS LocalStack.</p>
+    </div>
+    <div class="page-actions" style="display: flex; gap: 0.75rem;">
+        <form action="{{ url_for('baca_semua_pesan') }}" method="post">
+            <button type="submit" class="btn btn-primary" {% if not messages %}disabled{% endif %}>
+                ✓ Tandai Baca Semua
+            </button>
+        </form>
+        <button class="btn btn-outline" onclick="window.location.reload()">
+            ⟳ Segarkan
+        </button>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-header">
+        <h2>Antrean Pesan SQS</h2>
+    </div>
+    <div style="padding: 1.5rem;">
+        {% if messages %}
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                {% for message in messages %}
+                <div style="display: flex; gap: 1rem; padding: 1.25rem; background: var(--bg-main); border: 1px solid var(--border); border-radius: 0.75rem; transition: var(--transition);" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+                    <div style="width: 40px; height: 40px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        ✉
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.25rem;">
+                            <span style="font-weight: 600; color: var(--text-main); font-size: 0.9375rem;">Aktivitas Sistem</span>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">
+                                {% if message.Attributes and message.Attributes.SentTimestamp %}
+                                    {{ message.Attributes.SentTimestamp|int / 1000 }} (Unix)
+                                {% else %}
+                                    Baru saja
+                                {% endif %}
+                            </span>
+                        </div>
+                        <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.5;">{{ message.Body }}</p>
+                        <div style="margin-top: 0.75rem; font-size: 0.75rem; display: flex; gap: 1rem;">
+                            <form action="{{ url_for('hapus_pesan', receipt_handle=message.ReceiptHandle) }}" method="post">
+                                <button type="submit" style="background: none; border: none; padding: 0; color: var(--primary); font-weight: 600; cursor: pointer; font-family: inherit;">
+                                    Tandai telah dibaca
+                                </button>
+                            </form>
+                            <form action="{{ url_for('hapus_pesan', receipt_handle=message.ReceiptHandle) }}" method="post">
+                                <button type="submit" style="background: none; border: none; padding: 0; color: var(--danger); font-weight: 600; cursor: pointer; font-family: inherit;">
+                                    Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 4rem 1.5rem; color: var(--text-muted);">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">✉</div>
+                <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Antrean Kosong</h3>
+                <p style="font-size: 0.875rem;">Tidak ada pesan aktivitas baru di antrean SQS LocalStack.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

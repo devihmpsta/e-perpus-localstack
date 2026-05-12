@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Member | E-Perpus</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-body">
+    <div class="auth-card">
+        <!-- Left Side: Branding -->
+        <div class="auth-side-brand">
+            <img src="{{ url_for('static', filename='img/logo_text.png') }}" alt="Logo E-Perpus">
+            <h2>Gabung Sekarang</h2>
+            <p>Daftarkan diri Anda untuk mulai meminjam buku dan menikmati seluruh fasilitas perpustakaan digital kami.</p>
+        </div>
+
+        <!-- Right Side: Form -->
+        <div class="auth-main-content">
+            <h1>Daftar Member</h1>
+            <p class="subtitle">Buat akun untuk mulai menjelajah</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}" style="margin-bottom: 1.5rem;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form class="auth-form" method="post">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" name="name" class="auth-input" placeholder="Nama lengkap Anda" required>
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" class="auth-input" placeholder="Pilih username unik" required>
+                </div>
+                <div class="form-group">
+                    <label>Kata Sandi</label>
+                    <input type="password" name="password" class="auth-input" placeholder="Buat kata sandi Anda" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="auth-input" placeholder="contoh@mail.com">
+                </div>
+                <button class="auth-btn" type="submit">Buat Akun Member</button>
+            </form>
+
+            <div class="auth-divider">
+                <span>sudah punya akun?</span>
+            </div>
+
+            <a href="{{ url_for('login') }}" class="auth-btn-outline">
+                Kembali ke Login
+            </a>
+        </div>
+    </div>
+</body>
+</html>
